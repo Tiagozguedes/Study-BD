@@ -1,0 +1,201 @@
+cells:
+  - kind: 2
+    value: "--
+      =========================================================================\
+      ===\r
+
+      -- Projeto: Study-BD - Exemplo de esquema Oracle para uma escola de
+      tecnologia\r
+
+      -- Arquivo: sql/dml.sql\r
+
+      -- Descrição: Script DML com dados de exemplo para alimentar o esquema
+      criado\r
+
+      --            em sql/ddl.sql. Execute após a criação das tabelas,
+      sequences e\r
+
+      --            gatilhos. Todos os INSERTs assumem que os gatilhos
+      preencherão as\r
+
+      --            chaves primárias a partir das sequences correspondentes.\r
+
+      --
+      =========================================================================\
+      ==="
+    languageId: oracle-sql
+  - kind: 2
+    value: "INSERT INTO aluno (id_aluno, nome, email, data_nascimento, status)\r
+
+      VALUES (NULL, 'Ana Beatriz Souza', 'ana.souza@example.com',
+      TO_DATE('1995-03-12', 'YYYY-MM-DD'), 'ATIVO');\r
+
+      \r
+
+      INSERT INTO aluno (id_aluno, nome, email, data_nascimento, status)\r
+
+      VALUES (NULL, 'Carlos Henrique Lima', 'carlos.lima@example.com',
+      TO_DATE('1990-07-25', 'YYYY-MM-DD'), 'ATIVO');\r
+
+      \r
+
+      INSERT INTO aluno (id_aluno, nome, email, data_nascimento, status)\r
+
+      VALUES (NULL, 'Fernanda Gomes', 'fernanda.gomes@example.com',
+      TO_DATE('1988-11-02', 'YYYY-MM-DD'), 'ATIVO');\r
+
+      \r
+
+      INSERT INTO aluno (id_aluno, nome, email, data_nascimento, status)\r
+
+      VALUES (NULL, 'João Pedro Ribeiro', 'joao.ribeiro@example.com',
+      TO_DATE('1998-01-18', 'YYYY-MM-DD'), 'ATIVO');\r
+
+      \r
+
+      \r
+
+      INSERT INTO instrutor (id_instrutor, nome, email, especialidade,
+      valor_hora)\r
+
+      VALUES (NULL, 'Mariana Castro', 'mariana.castro@example.com', 'Banco de
+      Dados', 150);\r
+
+      \r
+
+      INSERT INTO instrutor (id_instrutor, nome, email, especialidade,
+      valor_hora)\r
+
+      VALUES (NULL, 'Rafael Dias', 'rafael.dias@example.com', 'Desenvolvimento
+      Back-end', 180);\r
+
+      \r
+
+      INSERT INTO instrutor (id_instrutor, nome, email, especialidade,
+      valor_hora)\r
+
+      VALUES (NULL, 'Sofia Martins', 'sofia.martins@example.com', 'Data
+      Science', 220);\r
+
+      \r
+
+      \r
+
+      INSERT INTO curso (id_curso, titulo, descricao, carga_horaria, preco_base,
+      categoria)\r
+
+      VALUES (NULL, 'Fundamentos de SQL', 'Aprenda os conceitos essenciais de
+      SQL e modelagem de dados.', 40, 799.90, 'Banco de Dados');\r
+
+      \r
+
+      INSERT INTO curso (id_curso, titulo, descricao, carga_horaria, preco_base,
+      categoria)\r
+
+      VALUES (NULL, 'APIs com Java e Spring', 'Desenvolvimento de APIs REST com
+      Spring Boot e boas práticas.', 60, 1299.00, 'Desenvolvimento');\r
+
+      \r
+
+      INSERT INTO curso (id_curso, titulo, descricao, carga_horaria, preco_base,
+      categoria)\r
+
+      VALUES (NULL, 'Introdução a Machine Learning', 'Construa modelos de
+      machine learning supervisionados.', 50, 1599.00, 'Data Science');\r
+
+      \r
+
+      \r
+
+      INSERT INTO oferta_curso (id_oferta, id_curso, id_instrutor, data_inicio,
+      data_fim, vagas_totais)\r
+
+      VALUES (NULL, 1, 1, TO_DATE('2024-05-06', 'YYYY-MM-DD'),
+      TO_DATE('2024-06-07', 'YYYY-MM-DD'), 25);\r
+
+      \r
+
+      INSERT INTO oferta_curso (id_oferta, id_curso, id_instrutor, data_inicio,
+      data_fim, vagas_totais)\r
+
+      VALUES (NULL, 2, 2, TO_DATE('2024-05-13', 'YYYY-MM-DD'),
+      TO_DATE('2024-07-05', 'YYYY-MM-DD'), 30);\r
+
+      \r
+
+      INSERT INTO oferta_curso (id_oferta, id_curso, id_instrutor, data_inicio,
+      data_fim, vagas_totais)\r
+
+      VALUES (NULL, 3, 3, TO_DATE('2024-06-03', 'YYYY-MM-DD'),
+      TO_DATE('2024-07-19', 'YYYY-MM-DD'), 20);\r
+
+      \r
+
+      \r
+
+      INSERT INTO matricula (id_matricula, id_oferta, id_aluno, valor_cobrado,
+      status_pagamento)\r
+
+      VALUES (NULL, 1, 1, 799.90, 'PAGO');\r
+
+      \r
+
+      INSERT INTO matricula (id_matricula, id_oferta, id_aluno, valor_cobrado,
+      status_pagamento)\r
+
+      VALUES (NULL, 1, 2, 799.90, 'PENDENTE');\r
+
+      \r
+
+      INSERT INTO matricula (id_matricula, id_oferta, id_aluno, valor_cobrado,
+      status_pagamento)\r
+
+      VALUES (NULL, 2, 3, 1299.00, 'PAGO');\r
+
+      \r
+
+      INSERT INTO matricula (id_matricula, id_oferta, id_aluno, valor_cobrado,
+      status_pagamento)\r
+
+      VALUES (NULL, 3, 4, 1599.00, 'PAGO');\r
+
+      \r
+
+      \r
+
+      INSERT INTO pagamento (id_pagamento, id_matricula, data_pagamento,
+      valor_pago, metodo_pagamento, observacao)\r
+
+      VALUES (NULL, 1, TO_DATE('2024-05-01', 'YYYY-MM-DD'), 799.90, 'PIX',
+      'Pagamento antecipado com desconto de pontualidade.');\r
+
+      \r
+
+      INSERT INTO pagamento (id_pagamento, id_matricula, data_pagamento,
+      valor_pago, metodo_pagamento)\r
+
+      VALUES (NULL, 3, TO_DATE('2024-05-15', 'YYYY-MM-DD'), 1299.00,
+      'CARTAO');\r
+
+      \r
+
+      INSERT INTO pagamento (id_pagamento, id_matricula, data_pagamento,
+      valor_pago, metodo_pagamento)\r
+
+      VALUES (NULL, 4, TO_DATE('2024-06-01', 'YYYY-MM-DD'), 1599.00,
+      'BOLETO');\r
+
+      \r
+
+      \r
+
+      UPDATE oferta_curso SET vagas_ocupadas = 2 WHERE id_oferta = 1;\r
+
+      UPDATE oferta_curso SET vagas_ocupadas = 1 WHERE id_oferta = 2;\r
+
+      UPDATE oferta_curso SET vagas_ocupadas = 1 WHERE id_oferta = 3;\r
+
+      \r
+
+      COMMIT;\r\n"
+    languageId: oracle-sql

@@ -1,0 +1,360 @@
+cells:
+  - kind: 2
+    value: "--
+      =========================================================================\
+      ===\r
+
+      -- Projeto: Study-BD - Exemplo de esquema Oracle para uma escola de
+      tecnologia\r
+
+      -- Arquivo: sql/ddl.sql\r
+
+      -- Descrição: Script DDL para criação de objetos do banco de dados.\r
+
+      --            Execute em um usuário dedicado (por exemplo, STUDYBD) no
+      Oracle.\r
+
+      --
+      =========================================================================\
+      ===\r
+
+      \r
+
+      -- Limpeza opcional (descomente se desejar recriar do zero).\r
+
+      -- DROP TABLE pagamento CASCADE CONSTRAINTS;\r
+
+      -- DROP TABLE matricula CASCADE CONSTRAINTS;\r
+
+      -- DROP TABLE oferta_curso CASCADE CONSTRAINTS;\r
+
+      -- DROP TABLE curso CASCADE CONSTRAINTS;\r
+
+      -- DROP TABLE instrutor CASCADE CONSTRAINTS;\r
+
+      -- DROP TABLE aluno CASCADE CONSTRAINTS;\r
+
+      -- DROP SEQUENCE seq_aluno;\r
+
+      -- DROP SEQUENCE seq_instrutor;\r
+
+      -- DROP SEQUENCE seq_curso;\r
+
+      -- DROP SEQUENCE seq_oferta_curso;\r
+
+      -- DROP SEQUENCE seq_matricula;\r
+
+      -- DROP SEQUENCE seq_pagamento;"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE TABLE aluno (\r
+
+      \    id_aluno        NUMBER(10)        NOT NULL,\r
+
+      \    nome            VARCHAR2(120)     NOT NULL,\r
+
+      \    email           VARCHAR2(180)     NOT NULL UNIQUE,\r
+
+      \    data_nascimento DATE              NOT NULL,\r
+
+      \    data_cadastro   DATE              DEFAULT SYSDATE NOT NULL,\r
+
+      \    status          VARCHAR2(15)      DEFAULT 'ATIVO' CHECK (status IN
+      ('ATIVO', 'INATIVO')),\r
+
+      \    CONSTRAINT pk_aluno PRIMARY KEY (id_aluno)\r
+
+      );\r
+
+      \r
+
+      CREATE TABLE instrutor (\r
+
+      \    id_instrutor    NUMBER(10)        NOT NULL,\r
+
+      \    nome            VARCHAR2(120)     NOT NULL,\r
+
+      \    email           VARCHAR2(180)     NOT NULL UNIQUE,\r
+
+      \    especialidade   VARCHAR2(100)     NOT NULL,\r
+
+      \    valor_hora      NUMBER(8,2)       NOT NULL CHECK (valor_hora > 0),\r
+
+      \    data_contratacao DATE             DEFAULT SYSDATE NOT NULL,\r
+
+      \    CONSTRAINT pk_instrutor PRIMARY KEY (id_instrutor)"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE TABLE curso (\r
+
+      \    id_curso        NUMBER(10)        NOT NULL,\r
+
+      \    titulo          VARCHAR2(150)     NOT NULL,\r
+
+      \    descricao       VARCHAR2(1000),\r
+
+      \    carga_horaria   NUMBER(4)         NOT NULL CHECK (carga_horaria >
+      0),\r
+
+      \    preco_base      NUMBER(9,2)       NOT NULL CHECK (preco_base >= 0),\r
+
+      \    categoria       VARCHAR2(60)      NOT NULL,\r
+
+      \    CONSTRAINT pk_curso PRIMARY KEY (id_curso)\r
+
+      );\r
+
+      \r
+
+      CREATE TABLE oferta_curso (\r
+
+      \    id_oferta       NUMBER(10)        NOT NULL,\r
+
+      \    id_curso        NUMBER(10)        NOT NULL,\r
+
+      \    id_instrutor    NUMBER(10)        NOT NULL,\r
+
+      \    data_inicio     DATE              NOT NULL,\r
+
+      \    data_fim        DATE              NOT NULL,\r
+
+      \    vagas_totais    NUMBER(4)         NOT NULL CHECK (vagas_totais >
+      0),\r
+
+      \    vagas_ocupadas  NUMBER(4)         DEFAULT 0 CHECK (vagas_ocupadas >=
+      0),\r
+
+      \    status          VARCHAR2(15)      DEFAULT 'ABERTA' CHECK (status IN
+      ('ABERTA', 'EM_ANDAMENTO', 'ENCERRADA', 'CANCELADA')),\r
+
+      \    CONSTRAINT pk_oferta_curso PRIMARY KEY (id_oferta),\r
+
+      \    CONSTRAINT fk_oferta_curso_curso FOREIGN KEY (id_curso) REFERENCES
+      curso(id_curso),\r
+
+      \    CONSTRAINT fk_oferta_curso_instrutor FOREIGN KEY (id_instrutor)
+      REFERENCES instrutor(id_instrutor),\r
+
+      \    CONSTRAINT ck_oferta_periodo CHECK (data_fim > data_inicio)\r
+
+      );"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE TABLE matricula (\r
+
+      \    id_matricula    NUMBER(10)        NOT NULL,\r
+
+      \    id_oferta       NUMBER(10)        NOT NULL,\r
+
+      \    id_aluno        NUMBER(10)        NOT NULL,\r
+
+      \    data_matricula  DATE              DEFAULT SYSDATE NOT NULL,\r
+
+      \    valor_cobrado   NUMBER(9,2)       NOT NULL CHECK (valor_cobrado >=
+      0),\r
+
+      \    status_pagamento VARCHAR2(15)     DEFAULT 'PENDENTE' CHECK
+      (status_pagamento IN ('PENDENTE', 'PAGO', 'CANCELADO')),\r
+
+      \    CONSTRAINT pk_matricula PRIMARY KEY (id_matricula),\r
+
+      \    CONSTRAINT uq_matricula UNIQUE (id_oferta, id_aluno),\r
+
+      \    CONSTRAINT fk_matricula_oferta FOREIGN KEY (id_oferta) REFERENCES
+      oferta_curso(id_oferta),\r
+
+      \    CONSTRAINT fk_matricula_aluno FOREIGN KEY (id_aluno) REFERENCES
+      aluno(id_aluno)\r
+
+      );"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE TABLE pagamento (\r
+
+      \    id_pagamento    NUMBER(10)        NOT NULL,\r
+
+      \    id_matricula    NUMBER(10)        NOT NULL,\r
+
+      \    data_pagamento  DATE              DEFAULT SYSDATE NOT NULL,\r
+
+      \    valor_pago      NUMBER(9,2)       NOT NULL CHECK (valor_pago > 0),\r
+
+      \    metodo_pagamento VARCHAR2(30)     NOT NULL CHECK (metodo_pagamento IN
+      ('CARTAO', 'BOLETO', 'PIX', 'TRANSFERENCIA')),\r
+
+      \    observacao      VARCHAR2(300),\r
+
+      \    CONSTRAINT pk_pagamento PRIMARY KEY (id_pagamento),\r
+
+      \    CONSTRAINT fk_pagamento_matricula FOREIGN KEY (id_matricula)
+      REFERENCES matricula(id_matricula)\r
+
+      );"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE SEQUENCE seq_aluno START WITH 1 INCREMENT BY 1 NOCACHE;\r
+
+      CREATE SEQUENCE seq_instrutor START WITH 1 INCREMENT BY 1 NOCACHE;\r
+
+      CREATE SEQUENCE seq_curso START WITH 1 INCREMENT BY 1 NOCACHE;\r
+
+      CREATE SEQUENCE seq_oferta_curso START WITH 1 INCREMENT BY 1 NOCACHE;\r
+
+      CREATE SEQUENCE seq_matricula START WITH 1 INCREMENT BY 1 NOCACHE;\r
+
+      CREATE SEQUENCE seq_pagamento START WITH 1 INCREMENT BY 1 NOCACHE;"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE OR REPLACE TRIGGER trg_aluno_bi\r
+
+      BEFORE INSERT ON aluno\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_aluno IS NULL THEN\r
+
+      \        :NEW.id_aluno := seq_aluno.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /\r
+
+      \r
+
+      CREATE OR REPLACE TRIGGER trg_instrutor_bi\r
+
+      BEFORE INSERT ON instrutor\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_instrutor IS NULL THEN\r
+
+      \        :NEW.id_instrutor := seq_instrutor.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /\r
+
+      \r
+
+      CREATE OR REPLACE TRIGGER trg_curso_bi\r
+
+      BEFORE INSERT ON curso\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_curso IS NULL THEN\r
+
+      \        :NEW.id_curso := seq_curso.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /\r
+
+      \r
+
+      CREATE OR REPLACE TRIGGER trg_oferta_curso_bi\r
+
+      BEFORE INSERT ON oferta_curso\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_oferta IS NULL THEN\r
+
+      \        :NEW.id_oferta := seq_oferta_curso.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /\r
+
+      \r
+
+      CREATE OR REPLACE TRIGGER trg_matricula_bi\r
+
+      BEFORE INSERT ON matricula\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_matricula IS NULL THEN\r
+
+      \        :NEW.id_matricula := seq_matricula.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /\r
+
+      \r
+
+      CREATE OR REPLACE TRIGGER trg_pagamento_bi\r
+
+      BEFORE INSERT ON pagamento\r
+
+      FOR EACH ROW\r
+
+      BEGIN\r
+
+      \    IF :NEW.id_pagamento IS NULL THEN\r
+
+      \        :NEW.id_pagamento := seq_pagamento.NEXTVAL;\r
+
+      \    END IF;\r
+
+      END;\r
+
+      /"
+    languageId: oracle-sql
+  - kind: 2
+    value: "CREATE OR REPLACE VIEW vw_resumo_matriculas AS\r
+
+      SELECT\r
+
+      \    o.id_oferta,\r
+
+      \    c.titulo AS curso,\r
+
+      \    i.nome   AS instrutor,\r
+
+      \    o.data_inicio,\r
+
+      \    o.data_fim,\r
+
+      \    o.vagas_totais,\r
+
+      \    o.vagas_ocupadas,\r
+
+      \    COUNT(m.id_matricula) AS total_matriculas,\r
+
+      \    SUM(CASE WHEN m.status_pagamento = 'PAGO' THEN m.valor_cobrado ELSE 0
+      END) AS receita_confirmada\r
+
+      FROM oferta_curso o\r
+
+      JOIN curso c ON c.id_curso = o.id_curso\r
+
+      JOIN instrutor i ON i.id_instrutor = o.id_instrutor\r
+
+      LEFT JOIN matricula m ON m.id_oferta = o.id_oferta\r
+
+      GROUP BY o.id_oferta, c.titulo, i.nome, o.data_inicio, o.data_fim,
+      o.vagas_totais, o.vagas_ocupadas;\r\n"
+    languageId: oracle-sql
